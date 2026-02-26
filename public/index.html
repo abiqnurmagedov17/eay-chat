@@ -3,160 +3,306 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Copilot KW Tapi Jalan</title>
+  <title>AI Copilot - Vercel Version</title>
   <style>
-    /* style sama seperti sebelumnya */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 15px;
+      padding: 20px;
     }
-    .box {
+
+    .container {
       width: 100%;
-      max-width: 500px;
-      background: #1c1c1c;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      max-width: 600px;
     }
-    h3 {
-      margin: 0 0 15px 0;
-      color: #6c5ce7;
+
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      color: #333;
+    }
+
+    h1 {
       text-align: center;
-      font-size: 24px;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 2em;
     }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 0.9em;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
     textarea {
       width: 100%;
-      height: 100px;
-      background: #111;
-      color: #fff;
-      border: 1px solid #333;
-      padding: 12px;
-      resize: vertical;
-      border-radius: 8px;
+      height: 120px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
       font-family: inherit;
-      font-size: 14px;
-      box-sizing: border-box;
+      resize: vertical;
+      transition: border-color 0.3s;
     }
+
     textarea:focus {
-      outline: 2px solid #6c5ce7;
-      border-color: transparent;
+      outline: none;
+      border-color: #667eea;
     }
+
     button {
       width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      background: #6c5ce7;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
+      border-radius: 10px;
+      font-size: 18px;
       font-weight: bold;
-      transition: background 0.2s;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    button:hover {
-      background: #5b4bc4;
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
     }
+
     button:disabled {
-      background: #444;
+      opacity: 0.6;
       cursor: not-allowed;
     }
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      background: #111;
-      border-radius: 8px;
-      border-left: 4px solid #6c5ce7;
+
+    .result-container {
+      margin-top: 25px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 5px solid #667eea;
+      min-height: 100px;
+    }
+
+    .result-title {
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .result-content {
+      color: #555;
+      line-height: 1.6;
       white-space: pre-wrap;
-      font-size: 14px;
-      line-height: 1.5;
-      min-height: 60px;
+      word-wrap: break-word;
     }
-    .error {
-      color: #ff6b6b;
-      border-left-color: #ff6b6b;
-    }
+
     .loading {
-      color: #6c5ce7;
+      text-align: center;
+      color: #667eea;
+      font-style: italic;
+    }
+
+    .error {
+      color: #dc3545;
+      border-left-color: #dc3545;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.8em;
+    }
+
+    .footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #28a745;
+      color: white;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.7em;
+      margin-left: 10px;
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="card">
+      <h1>🤖 AI Copilot <span class="badge">Vercel</span></h1>
+      <p class="subtitle">Tanya apa aja, AI akan jawab</p>
 
-<div class="box">
-  <h3>AI Copilot</h3>
-  <textarea id="prompt" placeholder="Tanya apa aja..." rows="4"></textarea>
-  <button onclick="kirim()" id="btnKirim">Kirim</button>
-  <div class="result" id="hasil">Jawaban muncul di sini.</div>
-</div>
+      <div class="input-group">
+        <textarea 
+          id="prompt" 
+          placeholder="Contoh: Jelaskan tentang artificial intelligence..." 
+          rows="4"
+        ></textarea>
+      </div>
 
-<script>
-async function kirim() {
-  const prompt = document.getElementById("prompt").value;
-  const hasil = document.getElementById("hasil");
-  const btnKirim = document.getElementById("btnKirim");
+      <button onclick="kirim()" id="btnKirim">
+        🚀 Kirim Pertanyaan
+      </button>
 
-  if (!prompt.trim()) {
-    hasil.textContent = "Isi dulu, jangan males.";
-    hasil.className = "result error";
-    return;
-  }
+      <div class="result-container" id="hasilContainer">
+        <div class="result-title">
+          <span>📝 Jawaban:</span>
+        </div>
+        <div class="result-content" id="hasil">
+          Silakan tanya sesuatu...
+        </div>
+      </div>
+    </div>
 
-  btnKirim.disabled = true;
-  hasil.textContent = "AI lagi mikir...";
-  hasil.className = "result loading";
+    <div class="footer">
+      <p>⚡ Deployed on <a href="https://vercel.com" target="_blank">Vercel</a> | API by magma-api.biz.id</p>
+    </div>
+  </div>
 
-  try {
-    const encodedPrompt = encodeURIComponent(prompt);
-    
-    // FETCH KE API ENDPOINT DI VERCEL
-    // Pake relative URL biar otomatis sesuai domain
-    const res = await fetch(`/api/ai?prompt=${encodedPrompt}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
+  <script>
+    async function kirim() {
+      const promptInput = document.getElementById("prompt");
+      const hasilDiv = document.getElementById("hasil");
+      const hasilContainer = document.getElementById("hasilContainer");
+      const btnKirim = document.getElementById("btnKirim");
+      
+      const prompt = promptInput.value.trim();
+
+      // Validasi input
+      if (!prompt) {
+        hasilDiv.textContent = "❌ Isi dulu pertanyaannya, jangan kosong!";
+        hasilContainer.className = "result-container error";
+        return;
+      }
+
+      // Disable button
+      btnKirim.disabled = true;
+      
+      // Tampilkan loading
+      hasilDiv.textContent = "⏳ AI lagi mikir... (maks 10 detik)";
+      hasilContainer.className = "result-container";
+      
+      // Tambah efek loading
+      const originalText = hasilDiv.textContent;
+      let dots = 0;
+      const loadingInterval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        hasilDiv.textContent = originalText + ".".repeat(dots);
+      }, 500);
+
+      try {
+        // Encode prompt untuk URL
+        const encodedPrompt = encodeURIComponent(prompt);
+        
+        // Fetch ke API endpoint Vercel
+        const res = await fetch(`/api/ai?prompt=${encodedPrompt}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        // Clear loading interval
+        clearInterval(loadingInterval);
+
+        // Parse response JSON
+        const data = await res.json();
+
+        // Cek error dari server
+        if (!res.ok) {
+          throw new Error(data.message || `HTTP Error ${res.status}`);
+        }
+
+        // Cek error dari API
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Format response dengan berbagai kemungkinan struktur
+        let jawaban = "";
+        
+        if (data.status && data.result) {
+          if (typeof data.result === 'string') {
+            jawaban = data.result;
+          } else if (data.result.response) {
+            jawaban = data.result.response;
+          } else if (data.result.text) {
+            jawaban = data.result.text;
+          } else if (data.result.message) {
+            jawaban = data.result.message;
+          } else {
+            jawaban = JSON.stringify(data.result, null, 2);
+          }
+        } else if (data.response) {
+          jawaban = data.response;
+        } else if (data.message) {
+          jawaban = data.message;
+        } else if (data.answer) {
+          jawaban = data.answer;
+        } else {
+          // Fallback - tampilkan semua data
+          jawaban = JSON.stringify(data, null, 2);
+        }
+
+        // Tampilkan jawaban
+        hasilDiv.textContent = jawaban;
+        hasilContainer.className = "result-container";
+        
+      } catch (error) {
+        // Clear loading interval
+        clearInterval(loadingInterval);
+        
+        // Tampilkan error
+        hasilDiv.textContent = `❌ Error: ${error.message}`;
+        hasilContainer.className = "result-container error";
+        
+        console.error("Frontend Error:", error);
+      } finally {
+        // Enable button kembali
+        btnKirim.disabled = false;
+      }
+    }
+
+    // Support enter key untuk kirim
+    document.getElementById("prompt").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Mencegah newline
+        kirim();
       }
     });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
-    // Response dari backend
-    if (data.status && data.result) {
-      if (typeof data.result === 'string') {
-        hasil.textContent = data.result;
-      } else if (data.result.response) {
-        hasil.textContent = data.result.response;
-      } else {
-        hasil.textContent = JSON.stringify(data.result, null, 2);
-      }
-      hasil.className = "result";
-    } else {
-      hasil.textContent = JSON.stringify(data, null, 2);
-      hasil.className = "result";
-    }
-  } catch (err) {
-    hasil.textContent = `Error: ${err.message}`;
-    hasil.className = "result error";
-  } finally {
-    btnKirim.disabled = false;
-  }
-}
-</script>
-
+  </script>
 </body>
 </html>
