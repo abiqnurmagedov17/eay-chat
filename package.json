@@ -1,12 +1,9 @@
 {
-  "name": "eay-chat",
+  "name": "ai-copilot-kw",
   "version": "1.0.0",
+  "description": "AI Copilot KW yang dideploy ke Vercel",
   "type": "module",
-  "scripts": {
-    "dev": "node server.js",
-    "vercel-build": "echo Hello"
-  },
-  "dependencies": {
-    "node-fetch": "^3.3.2"
-  }
+  "keywords": ["ai", "copilot", "vercel", "serverless"],
+  "author": "Abiq Nurmagedov",
+  "license": "MIT"
 }
