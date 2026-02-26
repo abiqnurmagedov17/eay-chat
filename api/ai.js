@@ -1,54 +1,60 @@
-import fetch from "node-fetch";
-
 export default async function handler(req, res) {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Set CORS biar aman
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight request
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+  // Handle preflight request (OPTIONS)
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
   }
 
-  // Only allow GET
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  // Cuma terima method GET
+  if (req.method !== "GET") {
+    return res.status(405).json({ 
+      error: "Method not allowed",
+      message: "Cuma method GET yang diterima" 
+    });
   }
 
   try {
+    // Ambil prompt dari query parameter, default "hi"
     const prompt = req.query.prompt || "hi";
     
-    console.log(`[AI Request] Prompt: ${prompt}`);
+    console.log("📨 Prompt diterima:", prompt);
 
-    // Fetch ke API eksternal
+    // Fetch ke API eksternal (pake fetch native, ga perlu node-fetch)
     const response = await fetch(
       `https://magma-api.biz.id/ai/copilot?prompt=${encodeURIComponent(prompt)}`,
       {
         headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'Vercel-Serverless-Function'
+          "Accept": "application/json",
+          "User-Agent": "Vercel-Serverless-Function"
         }
       }
     );
 
+    // Cek response dari API eksternal
     if (!response.ok) {
-      throw new Error(`API external error! status: ${response.status}`);
+      throw new Error(`API Eksternal error: ${response.status} ${response.statusText}`);
     }
 
+    // Parse JSON response
     const data = await response.json();
     
-    console.log(`[AI Response] Status: ${data.status}`);
-    
-    // Kirim response
+    console.log("✅ Response dari API:", data.status ? "Sukses" : "Gagal");
+
+    // Kirim balik ke frontend
     return res.status(200).json(data);
     
-  } catch (err) {
-    console.error(`[AI Error] ${err.message}`);
+  } catch (error) {
+    console.error("❌ Error:", error.message);
+    
+    // Kirim error ke frontend
     return res.status(500).json({ 
-      error: "Backend lo yang error", 
-      detail: err.message 
+      error: "Backend error",
+      message: error.message,
+      hint: "Cek logs di Vercel dashboard"
     });
   }
 }
