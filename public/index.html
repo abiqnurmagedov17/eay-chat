@@ -56,10 +56,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 24px;
-      color: white;
       box-shadow: 4px 4px 0 #000;
+    }
+
+    .avatar svg {
+      width: 30px;
+      height: 30px;
+      fill: white;
     }
 
     .title h2 {
@@ -68,6 +71,9 @@
       text-transform: uppercase;
       letter-spacing: -0.5px;
       line-height: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .title p {
@@ -76,6 +82,16 @@
       color: #6c5ce7;
       text-transform: uppercase;
       letter-spacing: -0.3px;
+    }
+
+    .glitch {
+      font-weight: 900;
+      color: #6c5ce7;
+      background: #000;
+      padding: 2px 6px;
+      display: inline-block;
+      transform: rotate(-1deg);
+      font-size: 14px;
     }
 
     /* CHAT AREA */
@@ -160,10 +176,91 @@
       z-index: 1;
     }
 
+    /* MARKDOWN STYLES */
+    .bubble-bot h1 {
+      font-size: 24px;
+      font-weight: 900;
+      margin: 12px 0 8px 0;
+      border-bottom: 3px solid #000;
+      padding-bottom: 4px;
+    }
+
+    .bubble-bot h2 {
+      font-size: 20px;
+      font-weight: 900;
+      margin: 10px 0 6px 0;
+      border-bottom: 2px solid #000;
+      padding-bottom: 3px;
+    }
+
+    .bubble-bot h3 {
+      font-size: 18px;
+      font-weight: 900;
+      margin: 8px 0 4px 0;
+    }
+
+    .bubble-bot strong {
+      font-weight: 900;
+      color: #6c5ce7;
+    }
+
+    .bubble-bot em {
+      font-style: italic;
+      background: #f0f0f0;
+      padding: 0 4px;
+    }
+
+    .bubble-bot hr {
+      border: none;
+      border-top: 4px solid #000;
+      margin: 15px 0;
+      box-shadow: 3px 3px 0 #6c5ce7;
+    }
+
+    .bubble-bot ul, .bubble-bot ol {
+      margin-left: 20px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .bubble-bot li {
+      margin-bottom: 4px;
+    }
+
+    .bubble-bot code {
+      background: #000;
+      color: #6c5ce7;
+      padding: 2px 6px;
+      font-family: monospace;
+      border: 2px solid #6c5ce7;
+    }
+
+    .bubble-bot pre {
+      background: #000;
+      color: #6c5ce7;
+      padding: 12px;
+      border: 3px solid #6c5ce7;
+      margin: 10px 0;
+      overflow-x: auto;
+      font-family: monospace;
+    }
+
+    .bubble-bot a {
+      color: #6c5ce7;
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 3px solid #000;
+    }
+
+    .bubble-bot a:hover {
+      background: #6c5ce7;
+      color: white;
+    }
+
     .timestamp {
       font-size: 10px;
       font-weight: 700;
-      margin-top: 4px;
+      margin-top: 8px;
       opacity: 0.7;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -216,12 +313,8 @@
 
     .send-btn {
       background: #6c5ce7;
-      color: white;
       border: 3px solid #000;
       padding: 16px 20px;
-      font-weight: 900;
-      font-size: 24px;
-      line-height: 1;
       cursor: pointer;
       box-shadow: 5px 5px 0 #000;
       transition: all 0.1s ease;
@@ -229,6 +322,12 @@
       align-items: center;
       justify-content: center;
       min-width: 70px;
+    }
+
+    .send-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
     }
 
     .send-btn:hover {
@@ -252,7 +351,7 @@
     /* TYPING INDICATOR */
     .typing {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       padding: 16px 20px;
       background: white;
       border: 2.5px solid #000;
@@ -262,10 +361,9 @@
     }
 
     .typing span {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       background: #000;
-      border-radius: 0;
       animation: typing 1.4s infinite ease-in-out;
       box-shadow: 2px 2px 0 #6c5ce7;
     }
@@ -275,51 +373,107 @@
 
     @keyframes typing {
       0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-12px); }
+      30% { transform: translateY(-15px); }
     }
 
-    /* UTILS */
-    .glitch {
-      font-weight: 900;
-      color: #6c5ce7;
-      background: #000;
-      padding: 2px 6px;
-      display: inline-block;
-      transform: rotate(-1deg);
+    .error-bubble {
+      background: #ff4444;
+      color: white;
+      border-color: #000;
+      font-weight: 700;
+    }
+    .error-bubble::after {
+      background: #ff4444 !important;
+    }
+    .error-bubble strong {
+      color: white !important;
     }
   </style>
 </head>
 <body>
 
 <div class="neo-card">
-  <!-- HEADER -->
+  <!-- HEADER DENGAN SVG -->
   <div class="header">
-    <div class="avatar">🤖</div>
+    <div class="avatar">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-10H6v2h4v-2zm6 0h-4v2h4v-2zm-6.5 6c.42 1.11 1.49 2 2.5 2s2.08-.89 2.5-2h-5z"/>
+      </svg>
+    </div>
     <div class="title">
-      <h2>AI COPILOT <span class="glitch">KW</span></h2>
+      <h2>
+        AI COPILOT 
+        <span class="glitch">KW</span>
+      </h2>
       <p>brutalist intelligence</p>
     </div>
   </div>
 
   <!-- CHAT CONTAINER -->
-  <div class="chat-container" id="chatContainer">
-    <!-- Pesan akan di-render di sini oleh JavaScript -->
-  </div>
+  <div class="chat-container" id="chatContainer"></div>
 
-  <!-- INPUT AREA -->
+  <!-- INPUT AREA DENGAN SVG -->
   <div class="input-group">
     <textarea id="q" placeholder="Tanya apa aja..." rows="3"></textarea>
-    <button class="send-btn" onclick="ask()" id="btnSend">➡️</button>
+    <button class="send-btn" onclick="ask()" id="btnSend">
+      <svg viewBox="0 0 24 24">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
   </div>
 </div>
 
 <script>
+  // 🎯 MARKDOWN PARSER SEDERHANA
+  function renderMarkdown(text) {
+    if (!text) return '';
+    
+    // Escape HTML dulu biar aman
+    let escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    
+    return escaped
+      // Headings
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      
+      // Bold & Italic
+      .replace(/\*\*\*(.*?)\*\*\*/gim, '<strong><em>$1</em></strong>')
+      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+      
+      // Code blocks
+      .replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>')
+      .replace(/`(.*?)`/gim, '<code>$1</code>')
+      
+      // Horizontal rule
+      .replace(/^---$/gim, '<hr />')
+      
+      // Links [text](url)
+      .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>')
+      
+      // Lists (sederhana)
+      .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>')
+      .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
+      .replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>')
+      
+      // Line breaks
+      .replace(/\n/g, '<br>')
+      
+      // Clean up nested lists (brutal tapi works)
+      .replace(/<\/ul><br><ul>/g, '')
+      .replace(/<\/ol><br><ol>/g, '');
+  }
+
   // Elemen DOM
   const chatContainer = document.getElementById('chatContainer');
   const inputField = document.getElementById('q');
   const sendBtn = document.getElementById('btnSend');
 
-  // Inisialisasi: tambah pesan sambutan dari bot
+  // Add bot message dengan Markdown support
   function addBotMessage(text, isError = false) {
     const now = new Date();
     const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -327,7 +481,7 @@
     const bubble = document.createElement('div');
     bubble.className = `bubble bubble-bot ${isError ? 'error-bubble' : ''}`;
     bubble.innerHTML = `
-      <div>${text}</div>
+      <div class="markdown-body">${renderMarkdown(text)}</div>
       <div class="timestamp">${timestamp}</div>
     `;
     chatContainer.appendChild(bubble);
@@ -367,28 +521,22 @@
     const q = inputField.value.trim();
 
     if (!q) {
-      addBotMessage('⚠️ ISI DULU, JANGAN MALES!', true);
+      addBotMessage('⚠️ **ISI DULU**, jangan males!', true);
       inputField.focus();
       return;
     }
 
-    // Disable button & input selama proses
     sendBtn.disabled = true;
     inputField.disabled = true;
 
-    // Tampilkan pesan user
     addUserMessage(q);
-    inputField.value = ''; // kosongkan input
-
-    // Tampilkan typing indicator
+    inputField.value = '';
     showTypingIndicator();
 
     try {
-      // Fetch ke API Vercel
       const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}`);
       const data = await r.json();
 
-      // Hapus typing indicator
       removeTypingIndicator();
 
       // Ambil response dengan fallback
@@ -403,31 +551,29 @@
       } else if (data?.message) {
         botReply = data.message;
       } else if (data?.error) {
-        botReply = `❌ ERROR: ${data.error}`;
+        botReply = `❌ **ERROR:** ${data.error}`;
       } else {
         botReply = JSON.stringify(data, null, 2);
       }
 
-      // Pastikan tidak kosong
       if (!botReply || botReply.trim() === '') {
-        botReply = '[⚠️ AI diam aja, mungkin lagi error]';
+        botReply = '⚠️ AI **diam aja**, mungkin lagi error.';
       }
 
       addBotMessage(botReply);
 
     } catch (e) {
       removeTypingIndicator();
-      addBotMessage(`💥 BRUTAL ERROR: ${e.message}`, true);
+      addBotMessage(`💥 **BRUTAL ERROR:** ${e.message}`, true);
       console.error(e);
     } finally {
-      // Enable kembali button & input
       sendBtn.disabled = false;
       inputField.disabled = false;
       inputField.focus();
     }
   }
 
-  // Enter untuk kirim (Shift+Enter untuk newline)
+  // Enter untuk kirim (Shift+Enter newline)
   inputField.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -437,23 +583,27 @@
 
   // Sambutan awal
   window.addEventListener('load', () => {
-    addBotMessage('Halo! 👋 Tanya apa aja.');
+    addBotMessage(`
+# 🤖 BRUTAL BOT AKTIF!
+
+**Neo Brutalism** *AI Copilot* siap tempur.
+
+Fitur baru:
+- **Markdown support** ✅
+- **SVG icons** ✅
+- **Bubble chat** ✅
+
+---
+
+Tanya apa aja, gua jawab pake gaya brutal.
+
+Contoh: \`kode juga bisa\`
+
+> "Brutalist design never dies"
+    `);
     inputField.focus();
   });
 </script>
-
-<!-- Tambahan style untuk error bubble -->
-<style>
-  .error-bubble {
-    background: #ff4444;
-    color: white;
-    border-color: #000;
-    font-weight: 700;
-  }
-  .error-bubble::after {
-    background: #ff4444 !important;
-  }
-</style>
 
 </body>
 </html>
