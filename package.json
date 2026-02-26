@@ -1,0 +1,12 @@
+{
+  "name": "eay-chat",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "vercel-build": "echo Hello"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
