@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Copilot KW Tapi Jalan</title>
+  <style>
+    /* style sama seperti sebelumnya */
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+    }
+    .box {
+      width: 100%;
+      max-width: 500px;
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    h3 {
+      margin: 0 0 15px 0;
+      color: #6c5ce7;
+      text-align: center;
+      font-size: 24px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 12px;
+      resize: vertical;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea:focus {
+      outline: 2px solid #6c5ce7;
+      border-color: transparent;
+    }
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #5b4bc4;
+    }
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #111;
+      border-radius: 8px;
+      border-left: 4px solid #6c5ce7;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 60px;
+    }
+    .error {
+      color: #ff6b6b;
+      border-left-color: #ff6b6b;
+    }
+    .loading {
+      color: #6c5ce7;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h3>AI Copilot</h3>
+  <textarea id="prompt" placeholder="Tanya apa aja..." rows="4"></textarea>
+  <button onclick="kirim()" id="btnKirim">Kirim</button>
+  <div class="result" id="hasil">Jawaban muncul di sini.</div>
+</div>
+
+<script>
+async function kirim() {
+  const prompt = document.getElementById("prompt").value;
+  const hasil = document.getElementById("hasil");
+  const btnKirim = document.getElementById("btnKirim");
+
+  if (!prompt.trim()) {
+    hasil.textContent = "Isi dulu, jangan males.";
+    hasil.className = "result error";
+    return;
+  }
+
+  btnKirim.disabled = true;
+  hasil.textContent = "AI lagi mikir...";
+  hasil.className = "result loading";
+
+  try {
+    const encodedPrompt = encodeURIComponent(prompt);
+    
+    // FETCH KE API ENDPOINT DI VERCEL
+    // Pake relative URL biar otomatis sesuai domain
+    const res = await fetch(`/api/ai?prompt=${encodedPrompt}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    // Response dari backend
+    if (data.status && data.result) {
+      if (typeof data.result === 'string') {
+        hasil.textContent = data.result;
+      } else if (data.result.response) {
+        hasil.textContent = data.result.response;
+      } else {
+        hasil.textContent = JSON.stringify(data.result, null, 2);
+      }
+      hasil.className = "result";
+    } else {
+      hasil.textContent = JSON.stringify(data, null, 2);
+      hasil.className = "result";
+    }
+  } catch (err) {
+    hasil.textContent = `Error: ${err.message}`;
+    hasil.className = "result error";
+  } finally {
+    btnKirim.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>
