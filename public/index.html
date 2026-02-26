@@ -1,308 +1,67 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Copilot - Vercel Version</title>
+  <meta charset="UTF-8" />
+  <title>AI Copilot</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      background:#0f0f0f;
+      color:#fff;
+      font-family:Arial;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
     }
-
-    .container {
-      width: 100%;
-      max-width: 600px;
+    .box {
+      width:400px;
+      background:#1c1c1c;
+      padding:20px;
+      border-radius:10px;
     }
-
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      color: #333;
-    }
-
-    h1 {
-      text-align: center;
-      color: #667eea;
-      margin-bottom: 10px;
-      font-size: 2em;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 30px;
-      font-size: 0.9em;
-    }
-
-    .input-group {
-      margin-bottom: 20px;
-    }
-
     textarea {
-      width: 100%;
-      height: 120px;
-      padding: 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 16px;
-      font-family: inherit;
-      resize: vertical;
-      transition: border-color 0.3s;
+      width:100%;
+      height:80px;
+      margin-bottom:10px;
     }
-
-    textarea:focus {
-      outline: none;
-      border-color: #667eea;
-    }
-
     button {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      width:100%;
+      padding:10px;
+      background:#6c5ce7;
+      color:#fff;
+      border:none;
     }
-
-    button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .result-container {
-      margin-top: 25px;
-      padding: 20px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      border-left: 5px solid #667eea;
-      min-height: 100px;
-    }
-
-    .result-title {
-      font-weight: bold;
-      color: #667eea;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .result-content {
-      color: #555;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
-    .loading {
-      text-align: center;
-      color: #667eea;
-      font-style: italic;
-    }
-
-    .error {
-      color: #dc3545;
-      border-left-color: #dc3545;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 20px;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.8em;
-    }
-
-    .footer a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
-    .badge {
-      display: inline-block;
-      background: #28a745;
-      color: white;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.7em;
-      margin-left: 10px;
-      vertical-align: middle;
+    pre {
+      margin-top:10px;
+      white-space:pre-wrap;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>🤖 AI Copilot <span class="badge">Vercel</span></h1>
-      <p class="subtitle">Tanya apa aja, AI akan jawab</p>
 
-      <div class="input-group">
-        <textarea 
-          id="prompt" 
-          placeholder="Contoh: Jelaskan tentang artificial intelligence..." 
-          rows="4"
-        ></textarea>
-      </div>
+<div class="box">
+  <h3>AI Copilot</h3>
+  <textarea id="q" placeholder="Tanya apa aja"></textarea>
+  <button onclick="ask()">Kirim</button>
+  <pre id="res">Jawaban muncul di sini</pre>
+</div>
 
-      <button onclick="kirim()" id="btnKirim">
-        🚀 Kirim Pertanyaan
-      </button>
+<script>
+async function ask() {
+  const q = document.getElementById("q").value;
+  const res = document.getElementById("res");
 
-      <div class="result-container" id="hasilContainer">
-        <div class="result-title">
-          <span>📝 Jawaban:</span>
-        </div>
-        <div class="result-content" id="hasil">
-          Silakan tanya sesuatu...
-        </div>
-      </div>
-    </div>
+  res.textContent = "AI mikir...";
 
-    <div class="footer">
-      <p>⚡ Deployed on <a href="https://vercel.com" target="_blank">Vercel</a> | API by magma-api.biz.id</p>
-    </div>
-  </div>
+  try {
+    const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    res.textContent = data?.result?.response || JSON.stringify(data, null, 2);
+  } catch (e) {
+    res.textContent = "Error: " + e.message;
+  }
+}
+</script>
 
-  <script>
-    async function kirim() {
-      const promptInput = document.getElementById("prompt");
-      const hasilDiv = document.getElementById("hasil");
-      const hasilContainer = document.getElementById("hasilContainer");
-      const btnKirim = document.getElementById("btnKirim");
-      
-      const prompt = promptInput.value.trim();
-
-      // Validasi input
-      if (!prompt) {
-        hasilDiv.textContent = "❌ Isi dulu pertanyaannya, jangan kosong!";
-        hasilContainer.className = "result-container error";
-        return;
-      }
-
-      // Disable button
-      btnKirim.disabled = true;
-      
-      // Tampilkan loading
-      hasilDiv.textContent = "⏳ AI lagi mikir... (maks 10 detik)";
-      hasilContainer.className = "result-container";
-      
-      // Tambah efek loading
-      const originalText = hasilDiv.textContent;
-      let dots = 0;
-      const loadingInterval = setInterval(() => {
-        dots = (dots + 1) % 4;
-        hasilDiv.textContent = originalText + ".".repeat(dots);
-      }, 500);
-
-      try {
-        // Encode prompt untuk URL
-        const encodedPrompt = encodeURIComponent(prompt);
-        
-        // Fetch ke API endpoint Vercel
-        const res = await fetch(`/api/ai?prompt=${encodedPrompt}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        // Clear loading interval
-        clearInterval(loadingInterval);
-
-        // Parse response JSON
-        const data = await res.json();
-
-        // Cek error dari server
-        if (!res.ok) {
-          throw new Error(data.message || `HTTP Error ${res.status}`);
-        }
-
-        // Cek error dari API
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        // Format response dengan berbagai kemungkinan struktur
-        let jawaban = "";
-        
-        if (data.status && data.result) {
-          if (typeof data.result === 'string') {
-            jawaban = data.result;
-          } else if (data.result.response) {
-            jawaban = data.result.response;
-          } else if (data.result.text) {
-            jawaban = data.result.text;
-          } else if (data.result.message) {
-            jawaban = data.result.message;
-          } else {
-            jawaban = JSON.stringify(data.result, null, 2);
-          }
-        } else if (data.response) {
-          jawaban = data.response;
-        } else if (data.message) {
-          jawaban = data.message;
-        } else if (data.answer) {
-          jawaban = data.answer;
-        } else {
-          // Fallback - tampilkan semua data
-          jawaban = JSON.stringify(data, null, 2);
-        }
-
-        // Tampilkan jawaban
-        hasilDiv.textContent = jawaban;
-        hasilContainer.className = "result-container";
-        
-      } catch (error) {
-        // Clear loading interval
-        clearInterval(loadingInterval);
-        
-        // Tampilkan error
-        hasilDiv.textContent = `❌ Error: ${error.message}`;
-        hasilContainer.className = "result-container error";
-        
-        console.error("Frontend Error:", error);
-      } finally {
-        // Enable button kembali
-        btnKirim.disabled = false;
-      }
-    }
-
-    // Support enter key untuk kirim
-    document.getElementById("prompt").addEventListener("keydown", function(e) {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault(); // Mencegah newline
-        kirim();
-      }
-    });
-  </script>
 </body>
 </html>
