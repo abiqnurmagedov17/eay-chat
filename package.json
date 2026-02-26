@@ -1,9 +1,5 @@
 {
   "name": "ai-copilot-kw",
   "version": "1.0.0",
-  "description": "AI Copilot KW yang dideploy ke Vercel",
-  "type": "module",
-  "keywords": ["ai", "copilot", "vercel", "serverless"],
-  "author": "Abiq Nurmagedov",
-  "license": "MIT"
+  "type": "module"
 }
