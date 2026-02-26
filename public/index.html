@@ -2,66 +2,458 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>AI Copilot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Copilot • Neo Brutalism</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background:#0f0f0f;
-      color:#fff;
-      font-family:Arial;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
+      background: #f0f0f0;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+      background-image: repeating-linear-gradient(45deg, #e0e0e0 0px, #e0e0e0 2px, #f0f0f0 2px, #f0f0f0 8px);
     }
-    .box {
-      width:400px;
-      background:#1c1c1c;
-      padding:20px;
-      border-radius:10px;
+
+    /* NEO BRUTALISM CORE */
+    .neo-card {
+      background: #ffffff;
+      border: 4px solid #000000;
+      box-shadow: 8px 8px 0 #000000;
+      padding: 24px;
+      width: 100%;
+      max-width: 520px;
+      transition: all 0.2s ease;
     }
+
+    .neo-card:hover {
+      box-shadow: 12px 12px 0 #000000;
+      transform: translate(-2px, -2px);
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      border-bottom: 4px solid #000;
+      padding-bottom: 16px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background: #6c5ce7;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 24px;
+      color: white;
+      box-shadow: 4px 4px 0 #000;
+    }
+
+    .title h2 {
+      font-size: 24px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .title p {
+      font-size: 14px;
+      font-weight: 600;
+      color: #6c5ce7;
+      text-transform: uppercase;
+      letter-spacing: -0.3px;
+    }
+
+    /* CHAT AREA */
+    .chat-container {
+      background: #f8f8f8;
+      border: 3px solid #000;
+      padding: 20px 16px;
+      margin-bottom: 24px;
+      min-height: 280px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: inset 4px 4px 0 #d0d0d0;
+    }
+
+    /* BUBBLE STYLES */
+    .bubble {
+      max-width: 85%;
+      padding: 12px 16px;
+      font-size: 15px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      border: 2.5px solid #000;
+      box-shadow: 5px 5px 0 #000;
+      position: relative;
+      transition: all 0.1s ease;
+    }
+
+    .bubble:hover {
+      box-shadow: 7px 7px 0 #000;
+      transform: translate(-2px, -2px);
+    }
+
+    .bubble-user {
+      align-self: flex-end;
+      background: #6c5ce7;
+      color: white;
+      font-weight: 600;
+      border-bottom-right-radius: 0;
+    }
+
+    .bubble-user::after {
+      content: '';
+      position: absolute;
+      bottom: -2.5px;
+      right: -10px;
+      width: 18px;
+      height: 18px;
+      background: #6c5ce7;
+      border: 2.5px solid #000;
+      border-top: none;
+      border-left: none;
+      box-shadow: 5px 5px 0 #000;
+      transform: rotate(45deg);
+      z-index: 1;
+    }
+
+    .bubble-bot {
+      align-self: flex-start;
+      background: white;
+      color: #000;
+      font-weight: 500;
+      border-bottom-left-radius: 0;
+      border-left: 2.5px solid #000;
+    }
+
+    .bubble-bot::after {
+      content: '';
+      position: absolute;
+      bottom: -2.5px;
+      left: -10px;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 2.5px solid #000;
+      border-top: none;
+      border-right: none;
+      box-shadow: -5px 5px 0 #000;
+      transform: rotate(-45deg);
+      z-index: 1;
+    }
+
+    .timestamp {
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 4px;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bubble-user .timestamp {
+      text-align: right;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .bubble-bot .timestamp {
+      color: #555;
+    }
+
+    /* INPUT AREA */
+    .input-group {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 8px;
+    }
+
     textarea {
-      width:100%;
-      height:80px;
-      margin-bottom:10px;
+      flex: 1;
+      background: white;
+      border: 3px solid #000;
+      padding: 16px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      resize: none;
+      height: 90px;
+      box-shadow: 5px 5px 0 #000;
+      transition: all 0.1s ease;
     }
-    button {
-      width:100%;
-      padding:10px;
-      background:#6c5ce7;
-      color:#fff;
-      border:none;
+
+    textarea:focus {
+      outline: none;
+      box-shadow: 7px 7px 0 #000;
+      transform: translate(-2px, -2px);
     }
-    pre {
-      margin-top:10px;
-      white-space:pre-wrap;
+
+    textarea::placeholder {
+      font-weight: 500;
+      color: #aaa;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .send-btn {
+      background: #6c5ce7;
+      color: white;
+      border: 3px solid #000;
+      padding: 16px 20px;
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 5px 5px 0 #000;
+      transition: all 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 70px;
+    }
+
+    .send-btn:hover {
+      box-shadow: 7px 7px 0 #000;
+      transform: translate(-2px, -2px);
+      background: #5b4bc4;
+    }
+
+    .send-btn:active {
+      box-shadow: 2px 2px 0 #000;
+      transform: translate(3px, 3px);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      box-shadow: 2px 2px 0 #000;
+      transform: translate(3px, 3px);
+    }
+
+    /* TYPING INDICATOR */
+    .typing {
+      display: flex;
+      gap: 6px;
+      padding: 16px 20px;
+      background: white;
+      border: 2.5px solid #000;
+      box-shadow: 5px 5px 0 #000;
+      align-self: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .typing span {
+      width: 10px;
+      height: 10px;
+      background: #000;
+      border-radius: 0;
+      animation: typing 1.4s infinite ease-in-out;
+      box-shadow: 2px 2px 0 #6c5ce7;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-12px); }
+    }
+
+    /* UTILS */
+    .glitch {
+      font-weight: 900;
+      color: #6c5ce7;
+      background: #000;
+      padding: 2px 6px;
+      display: inline-block;
+      transform: rotate(-1deg);
     }
   </style>
 </head>
 <body>
 
-<div class="box">
-  <h3>AI Copilot</h3>
-  <textarea id="q" placeholder="Tanya apa aja"></textarea>
-  <button onclick="ask()">Kirim</button>
-  <pre id="res">Jawaban muncul di sini</pre>
+<div class="neo-card">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar">🤖</div>
+    <div class="title">
+      <h2>AI COPILOT <span class="glitch">KW</span></h2>
+      <p>brutalist intelligence</p>
+    </div>
+  </div>
+
+  <!-- CHAT CONTAINER -->
+  <div class="chat-container" id="chatContainer">
+    <!-- Pesan akan di-render di sini oleh JavaScript -->
+  </div>
+
+  <!-- INPUT AREA -->
+  <div class="input-group">
+    <textarea id="q" placeholder="Tanya apa aja..." rows="3"></textarea>
+    <button class="send-btn" onclick="ask()" id="btnSend">➡️</button>
+  </div>
 </div>
 
 <script>
-async function ask() {
-  const q = document.getElementById("q").value;
-  const res = document.getElementById("res");
+  // Elemen DOM
+  const chatContainer = document.getElementById('chatContainer');
+  const inputField = document.getElementById('q');
+  const sendBtn = document.getElementById('btnSend');
 
-  res.textContent = "AI mikir...";
+  // Inisialisasi: tambah pesan sambutan dari bot
+  function addBotMessage(text, isError = false) {
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-  try {
-    const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}`);
-    const data = await r.json();
-    res.textContent = data?.result?.response || JSON.stringify(data, null, 2);
-  } catch (e) {
-    res.textContent = "Error: " + e.message;
+    const bubble = document.createElement('div');
+    bubble.className = `bubble bubble-bot ${isError ? 'error-bubble' : ''}`;
+    bubble.innerHTML = `
+      <div>${text}</div>
+      <div class="timestamp">${timestamp}</div>
+    `;
+    chatContainer.appendChild(bubble);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
   }
-}
+
+  function addUserMessage(text) {
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble bubble-user';
+    bubble.innerHTML = `
+      <div>${text}</div>
+      <div class="timestamp">${timestamp}</div>
+    `;
+    chatContainer.appendChild(bubble);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  function showTypingIndicator() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = '<span></span><span></span><span></span>';
+    chatContainer.appendChild(typingDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
+
+  // Fungsi utama
+  async function ask() {
+    const q = inputField.value.trim();
+
+    if (!q) {
+      addBotMessage('⚠️ ISI DULU, JANGAN MALES!', true);
+      inputField.focus();
+      return;
+    }
+
+    // Disable button & input selama proses
+    sendBtn.disabled = true;
+    inputField.disabled = true;
+
+    // Tampilkan pesan user
+    addUserMessage(q);
+    inputField.value = ''; // kosongkan input
+
+    // Tampilkan typing indicator
+    showTypingIndicator();
+
+    try {
+      // Fetch ke API Vercel
+      const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}`);
+      const data = await r.json();
+
+      // Hapus typing indicator
+      removeTypingIndicator();
+
+      // Ambil response dengan fallback
+      let botReply = '';
+      if (data?.status && data?.result) {
+        if (typeof data.result === 'string') botReply = data.result;
+        else if (data.result.response) botReply = data.result.response;
+        else if (data.result.text) botReply = data.result.text;
+        else botReply = JSON.stringify(data.result, null, 2);
+      } else if (data?.response) {
+        botReply = data.response;
+      } else if (data?.message) {
+        botReply = data.message;
+      } else if (data?.error) {
+        botReply = `❌ ERROR: ${data.error}`;
+      } else {
+        botReply = JSON.stringify(data, null, 2);
+      }
+
+      // Pastikan tidak kosong
+      if (!botReply || botReply.trim() === '') {
+        botReply = '[⚠️ AI diam aja, mungkin lagi error]';
+      }
+
+      addBotMessage(botReply);
+
+    } catch (e) {
+      removeTypingIndicator();
+      addBotMessage(`💥 BRUTAL ERROR: ${e.message}`, true);
+      console.error(e);
+    } finally {
+      // Enable kembali button & input
+      sendBtn.disabled = false;
+      inputField.disabled = false;
+      inputField.focus();
+    }
+  }
+
+  // Enter untuk kirim (Shift+Enter untuk newline)
+  inputField.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      ask();
+    }
+  });
+
+  // Sambutan awal
+  window.addEventListener('load', () => {
+    addBotMessage('Halo! 👋 Tanya apa aja.');
+    inputField.focus();
+  });
 </script>
+
+<!-- Tambahan style untuk error bubble -->
+<style>
+  .error-bubble {
+    background: #ff4444;
+    color: white;
+    border-color: #000;
+    font-weight: 700;
+  }
+  .error-bubble::after {
+    background: #ff4444 !important;
+  }
+</style>
 
 </body>
 </html>
