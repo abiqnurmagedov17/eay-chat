@@ -46,6 +46,44 @@
       margin-bottom: 28px;
       border-bottom: 4px solid #000;
       padding-bottom: 16px;
+      position: relative;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .clear-btn {
+      background: #ff4444;
+      border: 3px solid #000;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 #000;
+      transition: all 0.1s ease;
+    }
+
+    .clear-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+
+    .clear-btn:hover {
+      box-shadow: 6px 6px 0 #000;
+      transform: translate(-2px, -2px);
+      background: #ff6666;
+    }
+
+    .clear-btn:active {
+      box-shadow: 2px 2px 0 #000;
+      transform: translate(2px, 2px);
     }
 
     .avatar {
@@ -292,9 +330,11 @@
       font-size: 15px;
       font-weight: 500;
       resize: none;
-      height: 90px;
+      min-height: 90px;
+      max-height: 200px;
       box-shadow: 5px 5px 0 #000;
       transition: all 0.1s ease;
+      overflow-y: auto;
     }
 
     textarea:focus {
@@ -393,19 +433,26 @@
 <body>
 
 <div class="neo-card">
-  <!-- HEADER DENGAN SVG -->
+  <!-- HEADER DENGAN SVG DAN TOMBOL CLEAR -->
   <div class="header">
-    <div class="avatar">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-10H6v2h4v-2zm6 0h-4v2h4v-2zm-6.5 6c.42 1.11 1.49 2 2.5 2s2.08-.89 2.5-2h-5z"/>
-      </svg>
+    <div class="header-left">
+      <div class="avatar">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-10H6v2h4v-2zm6 0h-4v2h4v-2zm-6.5 6c.42 1.11 1.49 2 2.5 2s2.08-.89 2.5-2h-5z"/>
+        </svg>
+      </div>
+      <div class="title">
+        <h2>
+          AI COPILOT 
+          <span class="glitch">KW</span>
+        </h2>
+        <p>brutalist intelligence</p>
+      </div>
     </div>
-    <div class="title">
-      <h2>
-        AI COPILOT 
-        <span class="glitch">KW</span>
-      </h2>
-      <p>brutalist intelligence</p>
+    <div class="clear-btn" onclick="clearChat()" title="Clear chat & reset session">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+      </svg>
     </div>
   </div>
 
@@ -414,7 +461,7 @@
 
   <!-- INPUT AREA DENGAN SVG -->
   <div class="input-group">
-    <textarea id="q" placeholder="Tanya apa aja..." rows="3"></textarea>
+    <textarea id="q" placeholder="Tanya apa aja..." rows="1"></textarea>
     <button class="send-btn" onclick="ask()" id="btnSend">
       <svg viewBox="0 0 24 24">
         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
@@ -424,46 +471,37 @@
 </div>
 
 <script>
-  // 🎯 MARKDOWN PARSER SEDERHANA
+  // ========== 🔥 1. SESSION ID ==========
+  let sessionId = localStorage.getItem("sessionId");
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+  }
+
+  // ========== 🎯 MARKDOWN PARSER ==========
   function renderMarkdown(text) {
     if (!text) return '';
     
-    // Escape HTML dulu biar aman
     let escaped = text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
     
     return escaped
-      // Headings
       .replace(/^### (.*$)/gim, '<h3>$1</h3>')
       .replace(/^## (.*$)/gim, '<h2>$1</h2>')
       .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      
-      // Bold & Italic
       .replace(/\*\*\*(.*?)\*\*\*/gim, '<strong><em>$1</em></strong>')
       .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-      
-      // Code blocks
       .replace(/```([\s\S]*?)```/gim, '<pre><code>$1</code></pre>')
       .replace(/`(.*?)`/gim, '<code>$1</code>')
-      
-      // Horizontal rule
       .replace(/^---$/gim, '<hr />')
-      
-      // Links [text](url)
       .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>')
-      
-      // Lists (sederhana)
       .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>')
       .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
       .replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>')
-      
-      // Line breaks
       .replace(/\n/g, '<br>')
-      
-      // Clean up nested lists (brutal tapi works)
       .replace(/<\/ul><br><ul>/g, '')
       .replace(/<\/ol><br><ol>/g, '');
   }
@@ -473,33 +511,93 @@
   const inputField = document.getElementById('q');
   const sendBtn = document.getElementById('btnSend');
 
-  // Add bot message dengan Markdown support
-  function addBotMessage(text, isError = false) {
-    const now = new Date();
-    const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  // ========== 🔥 2. AUTO RESIZE TEXTAREA ==========
+  inputField.addEventListener("input", () => {
+    inputField.style.height = "auto";
+    inputField.style.height = Math.min(inputField.scrollHeight, 200) + "px";
+  });
 
-    const bubble = document.createElement('div');
-    bubble.className = `bubble bubble-bot ${isError ? 'error-bubble' : ''}`;
-    bubble.innerHTML = `
-      <div class="markdown-body">${renderMarkdown(text)}</div>
-      <div class="timestamp">${timestamp}</div>
-    `;
-    chatContainer.appendChild(bubble);
+  // ========== 🔥 4. PERSIST CHAT (LOAD) ==========
+  function loadChatHistory() {
+    const savedChat = localStorage.getItem("chatHistory");
+    if (savedChat) {
+      chatContainer.innerHTML = savedChat;
+    } else {
+      // Welcome message kalo belum ada history
+      addBotMessage(`
+# 🤖 BRUTAL BOT AKTIF!
+
+**Neo Brutalism** *AI Copilot* siap tempur.
+
+Fitur baru:
+- **Session ID** ✅ (AI inget percakapan)
+- **Auto resize textarea** ✅
+- **Clear chat** ✅
+- **Persist chat** ✅
+- **XSS aman** ✅
+
+---
+
+Tanya apa aja, gua jawab pake gaya brutal.
+
+Contoh: \`kode juga bisa\`
+
+> "Brutalist design never dies"
+      `);
+    }
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
 
+  // ========== 🔥 4. PERSIST CHAT (SAVE) ==========
+  function saveChatHistory() {
+    localStorage.setItem("chatHistory", chatContainer.innerHTML);
+  }
+
+  // ========== 🔥 3. ADD USER MESSAGE (AMAN) ==========
   function addUserMessage(text) {
     const now = new Date();
     const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble bubble-user';
-    bubble.innerHTML = `
-      <div>${text}</div>
-      <div class="timestamp">${timestamp}</div>
-    `;
+
+    const content = document.createElement('div');
+    content.textContent = text; // 🔥 AMAN! gak pake innerHTML
+
+    const time = document.createElement('div');
+    time.className = 'timestamp';
+    time.textContent = timestamp;
+
+    bubble.appendChild(content);
+    bubble.appendChild(time);
     chatContainer.appendChild(bubble);
     chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    saveChatHistory(); // 🔥 Simpan setiap ada pesan baru
+  }
+
+  // ========== ADD BOT MESSAGE (dengan Markdown) ==========
+  function addBotMessage(text, isError = false) {
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    const bubble = document.createElement('div');
+    bubble.className = `bubble bubble-bot ${isError ? 'error-bubble' : ''}`;
+
+    const content = document.createElement('div');
+    content.className = 'markdown-body';
+    content.innerHTML = renderMarkdown(text); // Bot boleh pake HTML karena udah di-escape di renderMarkdown
+
+    const time = document.createElement('div');
+    time.className = 'timestamp';
+    time.textContent = timestamp;
+
+    bubble.appendChild(content);
+    bubble.appendChild(time);
+    chatContainer.appendChild(bubble);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    saveChatHistory(); // 🔥 Simpan setiap ada pesan baru
   }
 
   function showTypingIndicator() {
@@ -516,7 +614,19 @@
     if (typing) typing.remove();
   }
 
-  // Fungsi utama
+  // ========== 🔥 4. CLEAR CHAT ==========
+  function clearChat() {
+    chatContainer.innerHTML = '';
+    localStorage.removeItem("sessionId");
+    localStorage.removeItem("chatHistory");
+    sessionId = crypto.randomUUID();
+    localStorage.setItem("sessionId", sessionId);
+    
+    // Welcome message lagi
+    addBotMessage("🧹 **Chat dibersihin!** Session ID baru dibuat.");
+  }
+
+  // ========== FUNGSI UTAMA ==========
   async function ask() {
     const q = inputField.value.trim();
 
@@ -531,15 +641,18 @@
 
     addUserMessage(q);
     inputField.value = '';
+    // Reset height textarea
+    inputField.style.height = "auto";
+    
     showTypingIndicator();
 
     try {
-      const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}`);
+      // 🔥 PAKE SESSION ID DI FETCH
+      const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}&sessionId=${sessionId}`);
       const data = await r.json();
 
       removeTypingIndicator();
 
-      // Ambil response dengan fallback
       let botReply = '';
       if (data?.status && data?.result) {
         if (typeof data.result === 'string') botReply = data.result;
@@ -581,28 +694,12 @@
     }
   });
 
-  // Sambutan awal
-  window.addEventListener('load', () => {
-    addBotMessage(`
-# 🤖 BRUTAL BOT AKTIF!
+  // Load chat history saat halaman dimuat
+  window.addEventListener('load', loadChatHistory);
 
-**Neo Brutalism** *AI Copilot* siap tempur.
-
-Fitur baru:
-- **Markdown support** ✅
-- **SVG icons** ✅
-- **Bubble chat** ✅
-
----
-
-Tanya apa aja, gua jawab pake gaya brutal.
-
-Contoh: \`kode juga bisa\`
-
-> "Brutalist design never dies"
-    `);
-    inputField.focus();
-  });
+  // Export fungsi ke global biar bisa dipanggil dari HTML
+  window.ask = ask;
+  window.clearChat = clearChat;
 </script>
 
 </body>
