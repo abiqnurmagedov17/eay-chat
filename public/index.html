@@ -626,7 +626,7 @@ Contoh: \`kode juga bisa\`
     addBotMessage("🧹 **Chat dibersihin!** Session ID baru dibuat.");
   }
 
-  // ========== FUNGSI UTAMA ==========
+  // ========== FUNGSI UTAMA (UDAH DIPERBAIKI) ==========
   async function ask() {
     const q = inputField.value.trim();
 
@@ -653,24 +653,24 @@ Contoh: \`kode juga bisa\`
 
       removeTypingIndicator();
 
-      let botReply = '';
-      if (data?.status && data?.result) {
-        if (typeof data.result === 'string') botReply = data.result;
-        else if (data.result.response) botReply = data.result.response;
-        else if (data.result.text) botReply = data.result.text;
-        else botReply = JSON.stringify(data.result, null, 2);
-      } else if (data?.response) {
-        botReply = data.response;
-      } else if (data?.message) {
-        botReply = data.message;
-      } else if (data?.error) {
-        botReply = `❌ **ERROR:** ${data.error}`;
-      } else {
-        botReply = JSON.stringify(data, null, 2);
+      // 🔥 FIX: PARSING RESPONSE PAKE LOGIKA YANG LO MINTA
+      let botReply = 
+        data?.result?.response ||
+        data?.result?.text ||
+        data?.result?.message ||
+        data?.result ||
+        data?.response ||
+        data?.message ||
+        (data?.error ? `❌ **ERROR:** ${data.error}` : null);
+
+      // Cek kalo hasilnya bukan string
+      if (typeof botReply !== "string") {
+        botReply = "⚠️ Format response ga dikenal.";
       }
 
-      if (!botReply || botReply.trim() === '') {
-        botReply = '⚠️ AI **diam aja**, mungkin lagi error.';
+      // Cek kalo kosong
+      if (!botReply?.trim()) {
+        botReply = "⚠️ AI diam aja, mungkin lagi error.";
       }
 
       addBotMessage(botReply);
