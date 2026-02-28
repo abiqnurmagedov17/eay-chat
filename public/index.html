@@ -132,7 +132,7 @@
       font-size: 14px;
     }
 
-    /* CHAT AREA */
+    /* CHAT AREA - MODIFIED untuk pesan baru di ATAS */
     .chat-container {
       background: #f8f8f8;
       border: 3px solid #000;
@@ -142,7 +142,7 @@
       max-height: 400px;
       overflow-y: auto;
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse; /* 🔥 Ini bikin pesan baru muncul di atas tapi visual tetap natural */
       gap: 18px;
       box-shadow: inset 4px 4px 0 #d0d0d0;
     }
@@ -535,6 +535,8 @@ Fitur baru:
 - **Clear chat** ✅
 - **Persist chat** ✅
 - **XSS aman** ✅
+- **Pesan baru di ATAS** ✅
+- **No auto focus** ✅
 
 ---
 
@@ -545,7 +547,7 @@ Contoh: \`kode juga bisa\`
 > "Brutalist design never dies"
       `);
     }
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    // 🔥 HAPUS scrollTop karena pake prepend + column-reverse
   }
 
   // ========== 🔥 4. PERSIST CHAT (SAVE) ==========
@@ -553,7 +555,7 @@ Contoh: \`kode juga bisa\`
     localStorage.setItem("chatHistory", chatContainer.innerHTML);
   }
 
-  // ========== 🔥 3. ADD USER MESSAGE (AMAN) ==========
+  // ========== 🔥 3. ADD USER MESSAGE (AMAN) + PREPEND ==========
   function addUserMessage(text) {
     const now = new Date();
     const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -570,13 +572,15 @@ Contoh: \`kode juga bisa\`
 
     bubble.appendChild(content);
     bubble.appendChild(time);
-    chatContainer.appendChild(bubble);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
     
-    saveChatHistory(); // 🔥 Simpan setiap ada pesan baru
+    // 🔥 PAKE PREPEND, BUKAN APPEND
+    chatContainer.prepend(bubble);
+    // 🔥 HAPUS scrollTop
+    
+    saveChatHistory();
   }
 
-  // ========== ADD BOT MESSAGE (dengan Markdown) ==========
+  // ========== ADD BOT MESSAGE (dengan Markdown) + PREPEND ==========
   function addBotMessage(text, isError = false) {
     const now = new Date();
     const timestamp = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -586,7 +590,7 @@ Contoh: \`kode juga bisa\`
 
     const content = document.createElement('div');
     content.className = 'markdown-body';
-    content.innerHTML = renderMarkdown(text); // Bot boleh pake HTML karena udah di-escape di renderMarkdown
+    content.innerHTML = renderMarkdown(text);
 
     const time = document.createElement('div');
     time.className = 'timestamp';
@@ -594,10 +598,12 @@ Contoh: \`kode juga bisa\`
 
     bubble.appendChild(content);
     bubble.appendChild(time);
-    chatContainer.appendChild(bubble);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
     
-    saveChatHistory(); // 🔥 Simpan setiap ada pesan baru
+    // 🔥 PAKE PREPEND, BUKAN APPEND
+    chatContainer.prepend(bubble);
+    // 🔥 HAPUS scrollTop
+    
+    saveChatHistory();
   }
 
   function showTypingIndicator() {
@@ -605,8 +611,9 @@ Contoh: \`kode juga bisa\`
     typingDiv.className = 'typing';
     typingDiv.id = 'typingIndicator';
     typingDiv.innerHTML = '<span></span><span></span><span></span>';
-    chatContainer.appendChild(typingDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    
+    // 🔥 Typing indicator juga prepend
+    chatContainer.prepend(typingDiv);
   }
 
   function removeTypingIndicator() {
@@ -626,7 +633,7 @@ Contoh: \`kode juga bisa\`
     addBotMessage("🧹 **Chat dibersihin!** Session ID baru dibuat.");
   }
 
-  // ========== FUNGSI UTAMA (UDAH DIPERBAIKI) ==========
+  // ========== FUNGSI UTAMA ==========
   async function ask() {
     const q = inputField.value.trim();
 
@@ -641,19 +648,16 @@ Contoh: \`kode juga bisa\`
 
     addUserMessage(q);
     inputField.value = '';
-    // Reset height textarea
     inputField.style.height = "auto";
     
     showTypingIndicator();
 
     try {
-      // 🔥 PAKE SESSION ID DI FETCH
       const r = await fetch(`/api/ai?prompt=${encodeURIComponent(q)}&sessionId=${sessionId}`);
       const data = await r.json();
 
       removeTypingIndicator();
 
-      // 🔥 FIX: PARSING RESPONSE PAKE LOGIKA YANG LO MINTA
       let botReply = 
         data?.result?.response ||
         data?.result?.text ||
@@ -663,12 +667,10 @@ Contoh: \`kode juga bisa\`
         data?.message ||
         (data?.error ? `❌ **ERROR:** ${data.error}` : null);
 
-      // Cek kalo hasilnya bukan string
       if (typeof botReply !== "string") {
         botReply = "⚠️ Format response ga dikenal.";
       }
 
-      // Cek kalo kosong
       if (!botReply?.trim()) {
         botReply = "⚠️ AI diam aja, mungkin lagi error.";
       }
@@ -682,7 +684,7 @@ Contoh: \`kode juga bisa\`
     } finally {
       sendBtn.disabled = false;
       inputField.disabled = false;
-      inputField.focus();
+      // 🔥 FOCUS DIHAPUS! Gak auto fokus lagi
     }
   }
 
@@ -697,7 +699,7 @@ Contoh: \`kode juga bisa\`
   // Load chat history saat halaman dimuat
   window.addEventListener('load', loadChatHistory);
 
-  // Export fungsi ke global biar bisa dipanggil dari HTML
+  // Export fungsi ke global
   window.ask = ask;
   window.clearChat = clearChat;
 </script>
